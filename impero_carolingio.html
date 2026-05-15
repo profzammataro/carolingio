@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Impero Carolingio — App di Ripasso</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --dark: #1a1410;
+    --parchment: #f5eedc;
+    --parchment-dark: #e8dcc0;
+    --brown: #5c3d1e;
+    --red: #8b2020;
+    --ink: #2c1f0e;
+    --shadow: rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'EB Garamond', Georgia, serif;
+    background: var(--dark);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    background: linear-gradient(135deg, #1a1410 0%, #2d1f0a 50%, #1a1410 100%);
+    border-bottom: 3px solid var(--gold);
+    padding: 2rem 1rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(201,168,76,0.12) 0%, transparent 70%);
+  }
+  .crown { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  header h1 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    letter-spacing: 0.05em;
+    text-shadow: 0 2px 8px rgba(201,168,76,0.4);
+    position: relative;
+  }
+  header p {
+    color: var(--parchment-dark);
+    font-style: italic;
+    font-size: 1rem;
+    margin-top: 0.4rem;
+    position: relative;
+  }
+
+  /* ─── NAV TABS ─── */
+  nav {
+    display: flex;
+    background: #120d08;
+    border-bottom: 2px solid var(--gold);
+    overflow-x: auto;
+  }
+  nav button {
+    flex: 1;
+    min-width: 100px;
+    padding: 0.9rem 0.5rem;
+    background: none;
+    border: none;
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: #a08860;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  nav button:hover { color: var(--gold-light); background: rgba(201,168,76,0.05); }
+  nav button.active { color: var(--gold); border-bottom-color: var(--gold); background: rgba(201,168,76,0.08); }
+
+  /* ─── MAIN CONTENT ─── */
+  main { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+
+  .section { display: none; animation: fadeIn 0.4s ease; }
+  .section.active { display: block; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ─── THEORY SECTION ─── */
+  .chapter-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(201,168,76,0.05);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+  }
+  .chapter-nav button {
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.3);
+    color: var(--gold-light);
+    font-family: 'EB Garamond', serif;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+  .chapter-nav button:hover, .chapter-nav button.active {
+    background: var(--gold);
+    color: var(--dark);
+    border-color: var(--gold);
+  }
+
+  .theory-block { display: none; }
+  .theory-block.active { display: block; }
+
+  .parchment-card {
+    background: var(--parchment);
+    border: 1px solid #c8b48a;
+    border-radius: 4px;
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.5);
+    position: relative;
+  }
+  .parchment-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--red), var(--gold), var(--red));
+    border-radius: 4px 4px 0 0;
+  }
+  .parchment-card h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--red);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #c8b48a;
+  }
+  .parchment-card h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--brown);
+    font-size: 0.95rem;
+    margin: 1.2rem 0 0.6rem;
+  }
+  .parchment-card p {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--ink);
+    margin-bottom: 0.8rem;
+  }
+  .parchment-card strong { color: var(--red); font-weight: 600; }
+  .parchment-card em { font-style: italic; color: var(--brown); }
+
+  .date-badge {
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 2px;
+    margin-right: 0.4rem;
+    vertical-align: middle;
+  }
+
+  /* ─── ESEMPI SECTION ─── */
+  .examples-grid { display: grid; gap: 1.2rem; }
+
+  .timeline {
+    background: var(--parchment);
+    border: 1px solid #c8b48a;
+    border-radius: 4px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .timeline h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--red);
+    font-size: 1.05rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #c8b48a;
+  }
+  .tl-item {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: 42px;
+    top: 24px;
+    bottom: -8px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+  .tl-item:last-child::before { display: none; }
+  .tl-year {
+    min-width: 60px;
+    background: var(--red);
+    color: white;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.4rem;
+    border-radius: 2px;
+    text-align: center;
+    line-height: 1.3;
+    height: fit-content;
+    margin-top: 3px;
+  }
+  .tl-text { font-size: 0.95rem; line-height: 1.6; color: var(--ink); }
+  .tl-text strong { color: var(--brown); }
+
+  .persona-card {
+    background: var(--parchment);
+    border: 1px solid #c8b48a;
+    border-radius: 4px;
+    padding: 1.2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .persona-card h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--red);
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #c8b48a;
+  }
+  .persona-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.8rem; }
+  .persona {
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 3px;
+    padding: 0.8rem;
+  }
+  .persona-name { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--brown); margin-bottom: 0.4rem; }
+  .persona-desc { font-size: 0.88rem; line-height: 1.5; color: var(--ink); }
+
+  .schema-card {
+    background: var(--parchment);
+    border: 1px solid #c8b48a;
+    border-radius: 4px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .schema-card h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--red);
+    font-size: 1.05rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #c8b48a;
+  }
+  .schema-box {
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 3px;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+  }
+  .schema-box h4 { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--red); margin-bottom: 0.5rem; }
+  .schema-box ul { padding-left: 1.2rem; }
+  .schema-box li { font-size: 0.92rem; line-height: 1.6; color: var(--ink); margin-bottom: 0.2rem; }
+
+  /* ─── TEST SECTION ─── */
+  .test-intro {
+    background: var(--parchment);
+    border: 1px solid #c8b48a;
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    text-align: center;
+  }
+  .test-intro h2 { font-family: 'Cinzel', serif; color: var(--red); font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .test-intro p { font-size: 0.95rem; color: var(--brown); }
+
+  .question-card {
+    background: var(--parchment);
+    border: 1px solid #c8b48a;
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    transition: all 0.3s;
+  }
+  .question-card.correct { border-color: #4a7c4e; background: #f0f7f0; }
+  .question-card.wrong { border-color: var(--red); background: #fdf0f0; }
+
+  .q-number {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    color: #a08860;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+  .q-text {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--ink);
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+  .q-options { display: flex; flex-direction: column; gap: 0.5rem; }
+  .q-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.6rem 0.8rem;
+    background: rgba(201,168,76,0.08);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.93rem;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .q-option:hover:not(.disabled) { background: rgba(201,168,76,0.18); border-color: var(--gold); }
+  .q-option.selected-correct { background: rgba(74,124,78,0.15); border-color: #4a7c4e; color: #2a5c2e; }
+  .q-option.selected-wrong { background: rgba(139,32,32,0.12); border-color: var(--red); color: var(--red); }
+  .q-option.show-correct { background: rgba(74,124,78,0.1); border-color: #4a7c4e; }
+  .q-option.disabled { cursor: default; }
+  .option-letter {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    min-width: 18px;
+    margin-top: 1px;
+    font-weight: 700;
+  }
+
+  .feedback {
+    display: none;
+    margin-top: 0.8rem;
+    padding: 0.7rem 1rem;
+    border-radius: 3px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .feedback.correct { display: block; background: rgba(74,124,78,0.12); border: 1px solid #4a7c4e; color: #2a5c2e; }
+  .feedback.wrong { display: block; background: rgba(139,32,32,0.08); border: 1px solid var(--red); color: var(--red); }
+
+  .test-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    padding: 0.7rem 1.8rem;
+    border: 2px solid var(--gold);
+    background: rgba(201,168,76,0.1);
+    color: var(--gold);
+    cursor: pointer;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    transition: all 0.25s;
+  }
+  .btn:hover { background: var(--gold); color: var(--dark); }
+  .btn.primary { background: var(--gold); color: var(--dark); }
+  .btn.primary:hover { background: var(--gold-light); }
+
+  .score-card {
+    display: none;
+    background: var(--parchment);
+    border: 2px solid var(--gold);
+    border-radius: 4px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 1.5rem;
+    box-shadow: 0 4px 30px rgba(201,168,76,0.3);
+    animation: fadeIn 0.5s ease;
+  }
+  .score-card h2 { font-family: 'Cinzel', serif; color: var(--red); font-size: 1.3rem; margin-bottom: 1rem; }
+  .score-big { font-family: 'Cinzel', serif; font-size: 3rem; color: var(--gold); line-height: 1; }
+  .score-label { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--brown); margin-bottom: 1rem; }
+  .score-msg { font-size: 1rem; color: var(--ink); line-height: 1.6; font-style: italic; }
+
+  /* ─── PROGRESS BAR ─── */
+  .progress-bar {
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 100px;
+    height: 6px;
+    margin: 1rem 0;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    border-radius: 100px;
+    transition: width 0.3s ease;
+  }
+
+  .section-label {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    opacity: 0.7;
+  }
+
+  @media(max-width: 600px) {
+    .persona-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="crown">⚜️</span>
+  <h1>L'Impero Carolingio</h1>
+  <p>Capitolo 25 — App di ripasso interattiva</p>
+</header>
+
+<nav>
+  <button class="active" onclick="showSection('teoria', this)">📖 Teoria</button>
+  <button onclick="showSection('esempi', this)">💡 Esempi</button>
+  <button onclick="showSection('test', this)">✅ Test finale</button>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════════
+     SEZIONE TEORIA
+══════════════════════════════════════════════ -->
+<div id="teoria" class="section active">
+  <p class="section-label">⚜ Teoria ⚜</p>
+
+  <div class="chapter-nav">
+    <button class="active" onclick="showTheory('t1', this)">1. I Franchi: dai Merovingi ai Pipinidi</button>
+    <button onclick="showTheory('t2', this)">2. Carlo Magno e il Sacro Romano Impero</button>
+    <button onclick="showTheory('t3', this)">3. L'amministrazione del nuovo impero</button>
+    <button onclick="showTheory('t4', this)">4. Economia e infrastrutture</button>
+    <button onclick="showTheory('t5', this)">5. Bisanzio e il trattato di Aquisgrana</button>
+  </div>
+
+  <!-- T1 -->
+  <div id="t1" class="theory-block active">
+    <div class="parchment-card">
+      <h2>1. I Franchi: dai Merovingi ai Pipinidi</h2>
+
+      <h3>La divisione del regno franco</h3>
+      <p>Tra la fine del V e l'inizio del VI secolo, i Franchi erano uno dei regni romano-barbarici più solidi, grazie alla <strong>convivenza piuttosto pacifica</strong> con i Gallo-Romani e all'autorità dei sovrani merovingi. Dopo la morte di <strong>Clodoveo</strong> (511), però, il regno entrò in una fase di <strong>crisi politica</strong>: le rivalità tra le grandi famiglie aristocratiche portarono alla nascita di sotto-regni: <strong>Austrasia</strong>, <strong>Neustria</strong>, <strong>Borgogna</strong> e <strong>Aquitania</strong>.</p>
+
+      <h3>I maestri di palazzo e i "re fannulloni"</h3>
+      <p>La frammentazione indebolì il potere dei sovrani e rafforzò i <strong>maestri di palazzo</strong>: figure con funzioni simili a quelle di un primo ministro, che assistevano, influenzavano e in pratica sostituivano il re. I Merovingi furono così ridotti a un ruolo puramente rappresentativo e guadagnarono l'appellativo storiografico di <strong>"re fannulloni"</strong>.</p>
+
+      <h3>L'ascesa dei Pipinidi</h3>
+      <p>L'ultimo re merovingio capace di controllare tutto il regno fu <strong>Dagoberto</strong> (632–639). Dopo di lui, i maestri di palazzo della famiglia dei <strong>Pipinidi</strong> — dal nome di <strong>Pipino di Landen</strong> ("il Vecchio") — consolidarono il potere, fondandosi su grandi ricchezze fondiarie, buone relazioni nobiliari e l'appoggio di numerosi monasteri.</p>
+
+      <h3>Pipino II e Carlo Martello</h3>
+      <p>Nel <strong>687</strong> <em>Pipino di Héristal</em> (Pipino II) unificò il governo di Austrasia, Neustria e Borgogna, restando formalmente sotto il re <strong>Teodorico III</strong> ma diventando l'arbitro della politica franca. Gli successe suo figlio <strong>Carlo Martello</strong> (il "piccolo Marte"), che dovette sedare lotte interne per la successione ma consolidò l'unità territoriale.</p>
+
+      <h3>La battaglia di Poitiers (732)</h3>
+      <p>Nel <strong>732</strong> Carlo Martello sconfisse gli Arabi a <strong>Poitiers</strong> con un esercito di cavalieri in pesanti <strong>armature di ferro</strong>. La vittoria bloccò l'espansione araba nelle regioni occidentali dell'Europa e assunse un grande <strong>valore politico e simbolico</strong>. Alcuni storici ridimensionano l'importanza dell'evento, sostenendo che gli Arabi stessi avevano ormai raggiunto il limite estremo delle loro capacità espansive.</p>
+
+      <h3>L'esercito dei Pipinidi</h3>
+      <p>Il potere militare dei Pipinidi si basava su un esercito "di popolo" e su un'<strong>abilissima cavalleria</strong> di cavalieri scelti, legati ai sovrani da <strong>relazioni personali di fedeltà</strong>: le stesse relazioni da cui sarebbe nato il <strong>sistema vassallatico</strong>. I cavalieri indossavano <strong>lunghe armature in cotta di maglia</strong>, elmi di cuoio e metallo, e usavano <strong>staffe</strong> per mantenersi in equilibrio.</p>
+
+      <h3>I rapporti con il papato</h3>
+      <p>L'altro fattore del successo franco era la <strong>religione</strong>: i Franchi erano stati i primi barbari a convertirsi al cattolicesimo, mentre altri popoli avevano aderito all'eresia ariana. Questo aveva creato <strong>legami molto stretti</strong> con il <strong>papato di Roma</strong>.</p>
+
+      <h3>Pipino il Breve, re dei Franchi</h3>
+      <p>Alla morte di Carlo Martello (741) il potere passò a <strong>Carlomanno</strong> e <strong>Pipino</strong> ("il Breve"). Pipino interrogò <strong>papa Zaccaria</strong> su chi dovesse regnare — chi aveva il titolo formale o chi deteneva il potere — e il papa riconobbe Pipino come legittimo re. Nel <strong>751</strong> Pipino fu consacrato <strong>re di tutti i Franchi</strong> a Parigi; nel <strong>754</strong> papa <strong>Stefano II</strong> gli conferì il titolo di "patrizio e protettore dei Romani". La nuova dinastia acquisì così un <strong>carattere sacro</strong>.</p>
+
+      <h3>I primi scontri con i Longobardi</h3>
+      <p>Stefano II era giunto a Parigi anche per chiedere aiuto contro i <strong>Longobardi</strong>. Pipino si impegnò a intervenire in Italia in cambio della consacrazione e a cedere al papa i territori conquistati ai Longobardi. Nel <strong>754</strong> i Franchi varcarono i confini italici per ostacolare il re longobardo <strong>Astolfo</strong>.</p>
+
+      <h3>La politica di pacificazione</h3>
+      <p>I primi scontri non produssero risultati definitivi. Quando Astolfo tornò ad attaccare Roma (756), Pipino intervenne di nuovo. Alla morte di Astolfo, Pipino adottò una politica di <strong>pacificazione</strong>: il primogenito <strong>Carlo</strong> sposò <strong>Ermengarda</strong> (figlia del nuovo re longobardo Desiderio) e <strong>Carlomanno</strong> sposò <strong>Gerberga</strong>.</p>
+    </div>
+  </div>
+
+  <!-- T2 -->
+  <div id="t2" class="theory-block">
+    <div class="parchment-card">
+      <h2>2. Carlo Magno e il "Sacro Romano Impero"</h2>
+
+      <h3>Carlo "Magno" e la conquista dell'Italia</h3>
+      <p>Nel <strong>768</strong> Pipino divise il regno tra Carlo e Carlomanno; nel <strong>771</strong> la morte precoce di Carlomanno lasciò tutto il potere a Carlo (poi detto "<strong>Magno</strong>", cioè "il Grande"). Carlo ripudiò la moglie longobarda <strong>Ermengarda</strong> e, nel <strong>773</strong>, scese in Italia sorprendendo i Longobardi. Nel <strong>774</strong> cadde <strong>Pavia</strong> e Carlo assunse il titolo di "<strong>re dei Longobardi</strong>".</p>
+
+      <h3>Le conquiste orientali</h3>
+      <p>La politica espansionistica di Carlo si estese anche a nord: attraverso lunghe guerre e la <strong>conversione forzata</strong> al cristianesimo, Carlo sottomise definitivamente i <strong>Sassoni</strong> nell'<strong>804</strong>. L'espansione a est portò alla conquista della <strong>Baviera</strong> (788) e alla vittoria sugli <strong>Avari</strong> (796), ampliando il regno verso i territori degli Slavi.</p>
+
+      <h3>Le conquiste occidentali</h3>
+      <p>Carlo si mosse anche contro gli Arabi nella <strong>Penisola iberica</strong>. Durante queste campagne si svolse la celebre <strong>battaglia di Roncisvalle</strong> (778), in cui la retroguardia franca — comandata da <strong>Rolando</strong> — fu annientata dai Baschi. L'episodio ispirò la <em>Chanson de Roland</em>. Tra l'801 e l'813 i Franchi strapparono agli Arabi la <strong>Catalogna</strong> e <strong>Barcellona</strong>, organizzando la zona come <em>Marca Hispanica</em>.</p>
+
+      <h3>La frammentazione politica dell'Italia</h3>
+      <p>La scomparsa del regno longobardo creò una frammentazione: il territorio era diviso tra <strong>Franchi</strong>, <strong>Bizantini</strong>, <strong>Longobardi</strong> residui e il <strong>Patrimonium Petri</strong> (p. 274). Mancava uno Stato italico capace di imporsi: il regno dei Franchi in Italia faceva parte del <strong>regno carolingio</strong>, gravitante intorno a un centro politico posto molto più a nord.</p>
+
+      <h3>L'incoronazione imperiale dell'800</h3>
+      <p>Le vittorie di Carlo gli diedero un enorme prestigio. Alla fine dell'<strong>800</strong> papa <strong>Leone III</strong> — rifugiatosi a Paderborn dopo essere stato aggredito da esponenti dell'aristocrazia romana — era rientrato a Roma grazie a Carlo. Durante la messa di Natale dell'800 Leone III pose la corona sul capo di Carlo pronunciando: <em>"A Carlo Augusto, coronato da Dio, grande e pacifico imperatore dei Romani"</em>.</p>
+
+      <h3>Il Sacro Romano Impero</h3>
+      <p>Nasceva il "<strong>Sacro romano impero</strong>": un impero <strong>germanico e cristiano</strong> innestato sulle radici della cultura romana. Rispetto all'antico impero romano, però, aveva caratteri ben diversi: geograficamente non includeva Penisola iberica, Italia meridionale, Inghilterra e Africa settentrionale, ma includeva Sassonia, Baviera e territori degli Avari. Il suo asse portante era <strong>Aquisgrana–Roma</strong> e lo definiva un <strong>impero continentale</strong>. Socialmente era un <strong>mosaico di popoli</strong> con diritti, lingue e culture diverse, la cui precaria unità era legata alla <strong>figura dell'imperatore</strong>.</p>
+
+      <h3>Il rapporto tra impero e papato</h3>
+      <p>Il nuovo impero si configurava come uno <strong>Stato cristiano</strong>, basato su una comune religione e sul dovere della sua difesa. La mossa di Leone III fu abilissima: affermava l'indipendenza del papa da Costantinopoli e stabiliva il principio che <strong>il potere proveniva da Dio</strong> e che spettava al papa conferirlo ai sovrani — in linea di principio, era il papa a <strong>legittimare</strong> il potere dell'imperatore.</p>
+
+      <h3>I due poteri</h3>
+      <p>Nascevano così le due colonne portanti della società medievale: <strong>l'imperatore</strong>, detentore dell'autorità politica su molti territori dell'Europa centrale e occidentale, e <strong>il papa</strong>, detentore di un'autorità morale e religiosa sulla società nel suo complesso. In Occidente il papa deteneva anche un vero e proprio <strong>potere temporale</strong> su un ampio territorio dell'Italia centrale.</p>
+    </div>
+  </div>
+
+  <!-- T3 -->
+  <div id="t3" class="theory-block">
+    <div class="parchment-card">
+      <h2>3. L'amministrazione del nuovo impero</h2>
+
+      <h3>L'organizzazione del territorio</h3>
+      <p>L'impero era suddiviso in centinaia di <strong>unità amministrative</strong> dette "<strong>contee</strong>", governate dai "<strong>conti</strong>" (dal latino <em>comites</em>, "compagni"), con funzioni di amministrazione della giustizia e convocazione dell'esercito. I conti erano assistiti dai "<strong>visconti</strong>" e dagli "<strong>scabini</strong>" (i giudici nei processi). Nelle zone di confine esistevano le "<strong>marche</strong>", governate dai "<strong>marchesi</strong>" o "margravi".</p>
+
+      <h3>I missi dominici</h3>
+      <p>Per vigilare sui conti e marchesi venivano nominati i <em><strong>missi dominici</strong></em> ("inviati del signore"), che operavano sempre in coppia (un laico e un ecclesiastico). Erano l'<strong>elemento di raccordo</strong> tra il potere centrale e la periferia, verificando l'operato dei funzionari locali e riferendo direttamente all'imperatore.</p>
+
+      <h3>Il palatium e la cancelleria</h3>
+      <p>La sede del governo era il <em><strong>palatium</strong></em> ("palazzo"), che non indicava un edificio ma la stessa <strong>corte imperiale itinerante</strong>, composta dall'imperatore, da chierici (con mansioni amministrative) e cavalieri. L'organo politico più importante del palatium era la <strong>cancelleria</strong>, retta dal "<strong>cancelliere</strong>", che compilava gli atti legislativi e curava gli archivi di Stato. Il "<strong>conte palatino</strong>" amministrava la giustizia in assenza dell'imperatore; il "<strong>camerario</strong>" gestiva il patrimonio imperiale.</p>
+
+      <h3>I capitolari</h3>
+      <p>Le leggi dell'impero erano dette "<strong>capitolari</strong>" (da <em>capitula</em>, brevi capitoli), emanate durante le assemblee dei nobili. I capitolari potevano valere per tutto l'impero o riguardare solo situazioni particolari.</p>
+
+      <h3>La riforma monetaria</h3>
+      <p>Carlo attuò un'importante <strong>riforma monetaria</strong>: l'unità di misura divenne la "<strong>libra</strong>" (circa 400 grammi d'argento), dalla quale si coniavano <strong>240 denari</strong>. Con l'introduzione della libra — da cui deriva il termine "lira" — si crearono <strong>tre grandi aree monetarie</strong>: quella <strong>europea-occidentale</strong> (libra carolingia, d'argento), quella <strong>bizantina</strong> (solidus/nomisma d'oro) e quella <strong>araba</strong> (dinaro d'oro). Le diverse monete riflettevano le diverse economie sulle quali poggiavano.</p>
+    </div>
+  </div>
+
+  <!-- T4 -->
+  <div id="t4" class="theory-block">
+    <div class="parchment-card">
+      <h2>4. Economia e infrastrutture</h2>
+
+      <h3>La società carolingia</h3>
+      <p>Grazie alla politica di Carlo, l'economia riacquistò un certo slancio, anche se la <strong>società carolingia</strong> rimaneva sostanzialmente <strong>rurale</strong> e la vita delle città era molto limitata. La produzione agricola riprese soprattutto nei <strong>latifondi</strong> (dei grandi proprietari terrieri, ma anche dei monasteri e dei vescovati), che garantivano una certa redditività e sicurezza.</p>
+
+      <h3>Strade e vie d'acqua</h3>
+      <p>Carlo fece <strong>restaurare</strong> le antiche strade romane, favorendo la ripresa dei <strong>contatti commerciali</strong>. In epoca carolingia, però, le principali vie di comunicazione non erano le strade bensì i <strong>fiumi</strong>: il Reno, il Danubio, il Po (arteria della Pianura padana). Le merci viaggiavano su <strong>battelli</strong> lungo il Rodano, la Senna, la Loira; persino le <strong>abbazie e i monasteri</strong> possedevano flottiglie di imbarcazioni.</p>
+
+      <h3>I porti marittimi italici</h3>
+      <p>In territorio italico, certi <strong>porti marittimi</strong> (perlopiù controllati dai Bizantini) come <strong>Venezia</strong>, Ravenna, Ancona, Bari e Amalfi iniziarono a essere al centro di traffici discreti, grazie all'organizzazione di fiere e mercati.</p>
+
+      <h3>Il sistema monetario</h3>
+      <p>La base dei sistemi monetari orientali (bizantino e arabo) era l'<strong>oro</strong>, poiché in quelle economie il commercio era più vivace. Nell'Europa carolingia le più modeste esigenze di un'economia di bassa scala erano meglio soddisfatte dall'<strong>argento</strong>, che divenne la base della lira.</p>
+    </div>
+  </div>
+
+  <!-- T5 -->
+  <div id="t5" class="theory-block">
+    <div class="parchment-card">
+      <h2>5. I rapporti con Bisanzio e il trattato di Aquisgrana</h2>
+
+      <h3>L'imperatrice Irene</h3>
+      <p>L'incoronazione di Carlo aprì un confronto con l'<strong>impero d'Oriente</strong>, i cui sovrani erano formalmente i soli veri eredi dell'antico impero romano. Bisanzio stava attraversando un periodo difficile: nell'<strong>800</strong> il trono di Costantinopoli era occupato dall'<strong>imperatrice Irene</strong>, che aveva deposto il figlio Costantino VI (facendolo accecare) ed era salita al potere come protettrice dell'ortodossia. La sua posizione era precaria: nell'<strong>802</strong> Irene fu deposta a seguito di una <strong>congiura</strong>. Il suo successore, <strong>Niceforo I</strong>, manifestò intenzioni bellicose verso Carlo, senza però giungere a uno scontro.</p>
+
+      <h3>Il trattato di Aquisgrana (812)</h3>
+      <p>Nell'<strong>812</strong> il nuovo imperatore bizantino <strong>Michele I</strong> accettò di venire a patti con Carlo: fu siglato il <strong>trattato di Aquisgrana</strong>. Michele riconosceva a Carlo Magno il <strong>titolo imperiale</strong> (ma non quello di "imperatore dei Romani", che il sovrano di Costantinopoli conservò per sé), mentre i Franchi rinunciavano a occupare la <strong>laguna veneta</strong>, ultima base bizantina nell'Italia settentrionale.</p>
+
+      <h3>Venezia</h3>
+      <p>La città di <strong>Venezia</strong>, già cresciuta all'epoca dell'invasione longobarda, poté così continuare a svilupparsi in un clima di effettiva <strong>autonomia politica</strong>, diventando il ponte tra l'impero bizantino e l'Europa occidentale.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SEZIONE ESEMPI
+══════════════════════════════════════════════ -->
+<div id="esempi" class="section">
+  <p class="section-label">⚜ Esempi & Schemi ⚜</p>
+
+  <div class="examples-grid">
+
+    <!-- TIMELINE -->
+    <div class="timeline">
+      <h2>📅 Cronologia essenziale</h2>
+      <div class="tl-item">
+        <div class="tl-year">511</div>
+        <div class="tl-text">Morte di <strong>Clodoveo</strong> → crisi politica dei Merovingi e nascita dei sotto-regni franchi</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">687</div>
+        <div class="tl-text"><strong>Pipino di Héristal</strong> (Pipino II) unifica Austrasia, Neustria e Borgogna</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">714</div>
+        <div class="tl-text">Morte di Pipino II → ascesa di <strong>Carlo Martello</strong></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">732</div>
+        <div class="tl-text"><strong>Battaglia di Poitiers</strong>: Carlo Martello sconfigge gli Arabi e blocca la loro espansione in Europa</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">741</div>
+        <div class="tl-text">Morte di Carlo Martello → Carlomanno e <strong>Pipino il Breve</strong></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">751</div>
+        <div class="tl-text"><strong>Pipino il Breve</strong> consacrato re dei Franchi; deposizione di Childerico III (ultimo Merovingio)</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">754</div>
+        <div class="tl-text">Papa Stefano II consacra Pipino "patrizio dei Romani"; prime campagne in Italia contro <strong>Astolfo</strong></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">768</div>
+        <div class="tl-text">Morte di Pipino → il regno è diviso tra <strong>Carlo</strong> e Carlomanno</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">771</div>
+        <div class="tl-text">Morte di Carlomanno → <strong>Carlo</strong> unico re dei Franchi</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">773–774</div>
+        <div class="tl-text">Conquista dell'Italia: cade <strong>Pavia</strong>, Carlo diventa "re dei Longobardi"</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">778</div>
+        <div class="tl-text"><strong>Battaglia di Roncisvalle</strong>: la retroguardia franca (Rolando) è annientata dai Baschi</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">788</div>
+        <div class="tl-text">Conquista della <strong>Baviera</strong></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">796</div>
+        <div class="tl-text">Vittoria sugli <strong>Avari</strong></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">800</div>
+        <div class="tl-text">Papa Leone III incorona Carlo imperatore: nasce il <strong>Sacro Romano Impero</strong></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">804</div>
+        <div class="tl-text">Sottomissione definitiva dei <strong>Sassoni</strong></div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">812</div>
+        <div class="tl-text"><strong>Trattato di Aquisgrana</strong>: Michele I riconosce il titolo imperiale di Carlo</div>
+      </div>
+    </div>
+
+    <!-- PERSONAGGI CHIAVE -->
+    <div class="persona-card">
+      <h2>👑 Personaggi chiave</h2>
+      <div class="persona-grid">
+        <div class="persona">
+          <div class="persona-name">Clodoveo (†511)</div>
+          <div class="persona-desc">Re dei Franchi, primo a convertirsi al cattolicesimo. Alla sua morte il regno si frantuma.</div>
+        </div>
+        <div class="persona">
+          <div class="persona-name">Pipino di Landen ("il Vecchio")</div>
+          <div class="persona-desc">Fondatore della dinastia dei Pipinidi (poi Carolingi), maestro di palazzo di Dagoberto.</div>
+        </div>
+        <div class="persona">
+          <div class="persona-name">Dagoberto (†639)</div>
+          <div class="persona-desc">Ultimo re merovingio capace di controllare l'intero regno franco.</div>
+        </div>
+        <div class="persona">
+          <div class="persona-name">Carlo Martello (†741)</div>
+          <div class="persona-desc">Figlio di Pipino II. Vince a Poitiers (732). Fondatore del potere militare carolingio.</div>
+        </div>
+        <div class="persona">
+          <div class="persona-name">Pipino il Breve (†768)</div>
+          <div class="persona-desc">Primo re carolingio (751). Ottiene la legittimazione papale; avvia la lotta ai Longobardi.</div>
+        </div>
+        <div class="persona">
+          <div class="persona-name">Carlo Magno (742–814)</div>
+          <div class="persona-desc">Re dei Franchi (771), re dei Longobardi (774), imperatore (800). Costruisce il Sacro Romano Impero.</div>
+        </div>
+        <div class="persona">
+          <div class="persona-name">Leone III (papa)</div>
+          <div class="persona-desc">Incorona Carlo nell'800. La sua mossa afferma l'indipendenza da Bisanzio e il principio che il potere viene da Dio.</div>
+        </div>
+        <div class="persona">
+          <div class="persona-name">Imperatrice Irene</div>
+          <div class="persona-desc">Sovrana di Bisanzio nell'800. Deposita il figlio Costantino VI. Deposta nel 802.</div>
+        </div>
+        <div class="persona">
+          <div class="persona-name">Desiderio</div>
+          <div class="persona-desc">Re dei Longobardi, sconfitto da Carlo Magno nel 774. Finisce la vita in prigionia.</div>
+        </div>
+        <div class="persona">
+          <div class="persona-name">Rolando</div>
+          <div class="persona-desc">Comandante della retroguardia franca a Roncisvalle (778). Protagonista della Chanson de Roland.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHEMA AMMINISTRATIVO -->
+    <div class="schema-card">
+      <h2>🏛️ Schema: l'amministrazione carolingia</h2>
+      <div class="schema-box">
+        <h4>IMPERATORE</h4>
+        <ul>
+          <li>Sede: <em>palatium</em> (corte itinerante, spesso ad Aquisgrana)</li>
+          <li>Leggi: <em>capitolari</em> (emanati nelle assemblee dei nobili)</li>
+        </ul>
+      </div>
+      <div class="schema-box">
+        <h4>PALATIUM — funzionari centrali</h4>
+        <ul>
+          <li><strong>Cancelliere</strong> → atti legislativi, archivi, affari ecclesiastici</li>
+          <li><strong>Conte palatino</strong> → amministrazione della giustizia in assenza dell'imperatore</li>
+          <li><strong>Camerario</strong> → patrimonio imperiale</li>
+          <li><strong>Missi dominici</strong> → ispezione di conti e marchesi (coppie laico+ecclesiastico)</li>
+        </ul>
+      </div>
+      <div class="schema-box">
+        <h4>TERRITORIO — funzionari periferici</h4>
+        <ul>
+          <li><strong>Conti</strong> → governano le "contee" (giustizia + esercito)</li>
+          <li><strong>Visconti e scabini</strong> → assistono i conti</li>
+          <li><strong>Marchesi / Margravi</strong> → governano le "marche" (zone di confine)</li>
+        </ul>
+      </div>
+      <div class="schema-box">
+        <h4>RIFORMA MONETARIA</h4>
+        <ul>
+          <li>Unità: <strong>libra</strong> = ~400 g d'argento = 240 denari</li>
+          <li>Tre aree: carolingia (argento) | bizantina (oro solidus) | araba (oro dinaro)</li>
+          <li>La libra è l'origine del termine "lira"</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- SACRO ROMANO IMPERO vs IMPERO ROMANO -->
+    <div class="schema-card">
+      <h2>⚖️ Confronto: Sacro Romano Impero vs Impero Romano</h2>
+      <div class="schema-box">
+        <h4>Differenze geografiche</h4>
+        <ul>
+          <li>NON include: Penisola iberica, Italia meridionale, Inghilterra, Africa settentrionale</li>
+          <li>Include: Sassonia, Baviera, territori degli Avari (fuori dal <em>limes</em> romano)</li>
+          <li>Asse portante: <strong>Aquisgrana → Roma</strong> (nord-sud, continentale)</li>
+          <li>L'impero romano aveva il suo centro nel Mediterraneo</li>
+        </ul>
+      </div>
+      <div class="schema-box">
+        <h4>Differenze sociali e culturali</h4>
+        <ul>
+          <li>Mosaico di popoli con diritti, lingue, culture diverse</li>
+          <li>Unità precaria, legata alla figura dell'imperatore</li>
+          <li>Mancava l'apparato burocratico di funzionari professionisti</li>
+          <li>Era uno Stato cristiano (non laico come il romano)</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SEZIONE TEST
+══════════════════════════════════════════════ -->
+<div id="test" class="section">
+  <p class="section-label">⚜ Test finale ⚜</p>
+
+  <div class="test-intro">
+    <h2>⚔️ Metti alla prova le tue conoscenze</h2>
+    <p>20 domande sull'Impero Carolingio. Clicca la risposta che ritieni corretta.</p>
+  </div>
+
+  <div id="progress-container">
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="questions-container"></div>
+
+  <div class="test-controls">
+    <button class="btn primary" onclick="checkAll()">📜 Verifica tutto</button>
+    <button class="btn" onclick="resetTest()">🔄 Ricomincia</button>
+  </div>
+
+  <div class="score-card" id="score-card">
+    <h2>⚜️ Risultato</h2>
+    <div class="score-big" id="score-big">—</div>
+    <div class="score-label">su 20 domande</div>
+    <div class="score-msg" id="score-msg"></div>
+  </div>
+</div>
+
+</main>
+
+<script>
+// ─── NAVIGATION ───
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showTheory(id, btn) {
+  document.querySelectorAll('.theory-block').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.chapter-nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── QUIZ DATA ───
+const questions = [
+  {
+    q: "Quale appellativo storiografico viene dato ai re merovingi che persero il potere effettivo a favore dei maestri di palazzo?",
+    opts: ["Re guerrieri", "Re fannulloni", "Re fantoccio", "Re sacerdoti"],
+    ans: 1,
+    exp: "I re merovingi, ridotti a un ruolo puramente rappresentativo, guadagnarono l'appellativo di <em>re fannulloni</em>, coniato in ambito storiografico."
+  },
+  {
+    q: "Quale fu l'ultimo re merovingio capace di esercitare controllo sull'intero territorio franco?",
+    opts: ["Clodoveo", "Teodorico III", "Dagoberto", "Childerico III"],
+    ans: 2,
+    exp: "Dagoberto, che regnò dal 632 al 639, fu l'ultimo re merovingio in grado di controllare tutto il regno franco."
+  },
+  {
+    q: "Cosa erano i 'maestri di palazzo' nell'organizzazione del regno franco?",
+    opts: ["Architetti reali", "Figure con funzioni simili a quelle di un primo ministro", "Guardie personali del re", "Funzionari fiscali"],
+    ans: 1,
+    exp: "I maestri di palazzo assistevano i re nell'esercizio del potere, li influenzavano nelle decisioni e li sostituivano in caso di assenza: avevano funzioni simili a quelle di <em>primi ministri</em>."
+  },
+  {
+    q: "In quale anno Carlo Martello sconfisse gli Arabi a Poitiers?",
+    opts: ["714", "751", "732", "687"],
+    ans: 2,
+    exp: "Nel <strong>732</strong> Carlo Martello sconfisse gli Arabi a Poitiers, bloccando la loro espansione nelle regioni occidentali dell'Europa."
+  },
+  {
+    q: "Quale fu la principale conseguenza politica e simbolica della battaglia di Poitiers?",
+    opts: ["L'eliminazione definitiva degli Arabi dall'Europa", "Il rafforzamento del potere dei Merovingi", "Il consolidamento del prestigio dei Pipinidi e il blocco dell'espansione araba", "La nascita della cavalleria franca"],
+    ans: 2,
+    exp: "La vittoria consolidò l'autorità dei Pipinidi e assunse un grande <em>valore politico e simbolico</em>: da quel momento gli Arabi rinunciarono a varcare i Pirenei."
+  },
+  {
+    q: "Chi riconobbe Pipino il Breve come legittimo re dei Franchi, permettendo la caduta degli ultimi Merovingi?",
+    opts: ["Papa Leone III", "Papa Adriano I", "Papa Zaccaria", "Papa Stefano II"],
+    ans: 2,
+    exp: "Pipino interrogò <strong>papa Zaccaria</strong> su chi dovesse regnare, e il papa riconobbe Pipino come legittimo re — aprendo la strada alla deposizione di Childerico III."
+  },
+  {
+    q: "In che anno Pipino il Breve fu consacrato re di tutti i Franchi?",
+    opts: ["741", "751", "754", "768"],
+    ans: 1,
+    exp: "Nel <strong>751</strong> Pipino si fece consacrare re di tutti i Franchi a Parigi dal vescovo Bonifacio, dopo aver deposto Childerico III."
+  },
+  {
+    q: "Quale titolo conferì papa Stefano II a Pipino nel 754?",
+    opts: ["Imperatore dei Romani", "Re dei Longobardi", "Patrizio e protettore dei Romani", "Difensore della Fede"],
+    ans: 2,
+    exp: "Nel 754 papa Stefano II conferì a Pipino il titolo di <em>patrizio e protettore dei Romani</em>, dando alla nuova dinastia un carattere sacro."
+  },
+  {
+    q: "Quando cadde Pavia e Carlo Magno divenne 're dei Longobardi'?",
+    opts: ["771", "773", "774", "778"],
+    ans: 2,
+    exp: "Carlo scese in Italia nel 773 e nel <strong>774</strong> Pavia cadde. Carlo assunse quindi il titolo di <em>re dei Longobardi</em>."
+  },
+  {
+    q: "Cosa avvenne durante la battaglia di Roncisvalle nel 778?",
+    opts: ["Carlo Magno sconfisse definitivamente i Sassoni", "La retroguardia franca comandata da Rolando fu annientata dai Baschi", "I Franchi conquistarono Barcellona", "Carlo ripudiò la moglie longobarda"],
+    ans: 1,
+    exp: "Il 15 agosto 778, di ritorno da una spedizione in Spagna, la retroguardia franca — comandata da <strong>Rolando</strong> — fu sorpresa e annientata dai Baschi a Roncisvalle. L'episodio ispirò la <em>Chanson de Roland</em>."
+  },
+  {
+    q: "In quale anno avvenne l'incoronazione imperiale di Carlo Magno?",
+    opts: ["796", "800", "804", "812"],
+    ans: 1,
+    exp: "Durante la messa di Natale dell'<strong>800</strong>, papa Leone III pose la corona sul capo di Carlo a Roma, proclamandolo <em>imperatore dei Romani</em>."
+  },
+  {
+    q: "Quali erano i funzionari imperiali incaricati di vigilare sull'operato di conti e marchesi?",
+    opts: ["I visconti", "Gli scabini", "I missi dominici", "I camerari"],
+    ans: 2,
+    exp: "I <em><strong>missi dominici</strong></em> ('inviati del signore') operavano in coppia (un laico e un ecclesiastico) e costituivano l'elemento di raccordo tra potere centrale e periferia."
+  },
+  {
+    q: "Che cos'era il 'palatium' nell'organizzazione carolingia?",
+    opts: ["Il palazzo reale fisso ad Aquisgrana", "La corte imperiale itinerante (non un edificio fisso)", "L'assemblea dei nobili", "La biblioteca imperiale"],
+    ans: 1,
+    exp: "Il <em>palatium</em> non indicava un edificio ma la stessa <strong>corte imperiale itinerante</strong>, composta dall'imperatore, da chierici con mansioni amministrative e da cavalieri."
+  },
+  {
+    q: "Come si chiamavano le leggi emanate da Carlo Magno durante le assemblee dei nobili?",
+    opts: ["Editti", "Capitolari", "Decreti palatini", "Bolle"],
+    ans: 1,
+    exp: "Le leggi carolinge erano dette <em><strong>capitolari</strong></em> (da <em>capitula</em>), emanate durante le assemblee dei nobili e valide per tutto l'impero o per situazioni particolari."
+  },
+  {
+    q: "Quanti denari si coniavano da una libra d'argento nella riforma monetaria di Carlo Magno?",
+    opts: ["12", "100", "240", "360"],
+    ans: 2,
+    exp: "Con la riforma monetaria di Carlo, da una libra d'argento (circa 400 grammi) si coniavano <strong>240 denari</strong>."
+  },
+  {
+    q: "Quale metallo era alla base dell'economia carolingia (a differenza di quella bizantina e araba)?",
+    opts: ["Oro", "Rame", "Argento", "Bronzo"],
+    ans: 2,
+    exp: "Nell'Europa carolingia le più modeste esigenze di un'economia di bassa scala erano meglio soddisfatte dall'<strong>argento</strong>, che divenne la base della lira. Bisanzio e gli Arabi usavano invece l'oro."
+  },
+  {
+    q: "Quale fu il principale mezzo di comunicazione e commercio nell'epoca carolingia (a differenza di quella romana)?",
+    opts: ["Le strade romane restaurate", "I fiumi", "Le rotte marittime", "I sentieri di montagna"],
+    ans: 1,
+    exp: "In epoca carolingia le principali vie di comunicazione non furono le strade ma i <strong>fiumi</strong>: Reno, Danubio, Po, Rodano, Senna, Loira — usati da battelli che trasportavano merci."
+  },
+  {
+    q: "Chi era l'imperatrice di Bisanzio nell'800, l'anno dell'incoronazione di Carlo Magno?",
+    opts: ["Teodora", "Zoe", "Irene", "Eudossia"],
+    ans: 2,
+    exp: "Nell'800 il trono di Costantinopoli era occupato dall'<strong>imperatrice Irene</strong>, che aveva deposto e accecato il figlio Costantino VI. Sarà deposta nel 802 a seguito di una congiura."
+  },
+  {
+    q: "Cosa stabilì il trattato di Aquisgrana del 812?",
+    opts: ["Carlo cedette la Baviera a Bisanzio", "Michele I riconobbe il titolo imperiale di Carlo; i Franchi rinunciarono alla laguna veneta", "Carlo Magno fu riconosciuto anche imperatore d'Oriente", "Venezia entrò nel Sacro Romano Impero"],
+    ans: 1,
+    exp: "Con il <strong>trattato di Aquisgrana</strong> (812) Michele I riconosceva a Carlo il titolo imperiale (non 'dei Romani'), mentre i Franchi rinunciavano alla laguna veneta — garantendo a Venezia la sua autonomia."
+  },
+  {
+    q: "Quale principio politico-religioso venne affermato con l'incoronazione di Carlo nell'800 da parte di Leone III?",
+    opts: ["Il potere dell'imperatore è superiore a quello del papa", "Il potere proveniva da Dio e spettava al papa conferirlo ai sovrani", "L'imperatore è il rappresentante di Dio in terra", "Papa e imperatore hanno poteri uguali"],
+    ans: 1,
+    exp: "La mossa di Leone III stabiliva il principio che <em>il potere proveniva da Dio</em> e che spettava al papa — rappresentante di Dio in terra — il diritto di conferirlo ai sovrani. In linea di principio, era il papa a <em>legittimare</em> il potere dell'imperatore."
+  }
+];
+
+// ─── RENDER QUESTIONS ───
+const container = document.getElementById('questions-container');
+const letters = ['A', 'B', 'C', 'D'];
+const answers = new Array(questions.length).fill(null);
+
+function renderQuestions() {
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `qcard-${i}`;
+    card.innerHTML = `
+      <div class="q-number">Domanda ${i + 1} di ${questions.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="q-options" id="opts-${i}">
+        ${q.opts.map((o, j) => `
+          <div class="q-option" id="opt-${i}-${j}" onclick="selectAnswer(${i}, ${j})">
+            <span class="option-letter">${letters[j]}</span>
+            <span>${o}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="feedback" id="fb-${i}"></div>
+    `;
+    container.appendChild(card);
+  });
+  updateProgress();
+}
+
+function selectAnswer(qi, oi) {
+  if (answers[qi] !== null) return; // already answered in check-all mode
+  // Allow re-selection before checking
+  document.querySelectorAll(`#opts-${qi} .q-option`).forEach(el => el.classList.remove('selected'));
+  document.getElementById(`opt-${qi}-${oi}`).classList.add('selected');
+  answers[qi] = oi;
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = answers.filter(a => a !== null).length;
+  document.getElementById('progress-fill').style.width = (answered / questions.length * 100) + '%';
+}
+
+function checkAll() {
+  let correct = 0;
+  questions.forEach((q, i) => {
+    const card = document.getElementById(`qcard-${i}`);
+    const fb = document.getElementById(`fb-${i}`);
+    const selected = answers[i];
+
+    // Disable all options
+    document.querySelectorAll(`#opts-${i} .q-option`).forEach(el => el.classList.add('disabled'));
+
+    if (selected === null) {
+      // Not answered
+      document.getElementById(`opt-${i}-${q.ans}`).classList.add('show-correct');
+      fb.className = 'feedback wrong';
+      fb.innerHTML = '⚠️ Non hai risposto. La risposta corretta era <strong>' + letters[q.ans] + ': ' + q.opts[q.ans] + '</strong>. ' + q.exp;
+    } else if (selected === q.ans) {
+      correct++;
+      card.classList.add('correct');
+      document.getElementById(`opt-${i}-${selected}`).classList.add('selected-correct');
+      fb.className = 'feedback correct';
+      fb.innerHTML = '✅ Corretto! ' + q.exp;
+    } else {
+      card.classList.add('wrong');
+      document.getElementById(`opt-${i}-${selected}`).classList.add('selected-wrong');
+      document.getElementById(`opt-${i}-${q.ans}`).classList.add('show-correct');
+      fb.className = 'feedback wrong';
+      fb.innerHTML = '❌ Sbagliato. La risposta corretta era <strong>' + letters[q.ans] + ': ' + q.opts[q.ans] + '</strong>. ' + q.exp;
+    }
+  });
+
+  // Show score
+  const pct = Math.round(correct / questions.length * 100);
+  document.getElementById('score-big').textContent = correct + '/20';
+  let msg = '';
+  if (pct >= 90) msg = '🏆 Eccellente! Sei pronto per l\'interrogazione — Carlo Magno sarebbe fiero di te!';
+  else if (pct >= 75) msg = '⚜️ Ottimo risultato! Ripassate le parti dove hai sbagliato e sarai perfetto.';
+  else if (pct >= 55) msg = '📖 Risultato sufficiente. Rileggi le sezioni sulla Teoria per consolidare i punti deboli.';
+  else msg = '🔄 Hai ancora bisogno di ripassare. Torna alla sezione Teoria e riprova!';
+  document.getElementById('score-msg').textContent = msg;
+  const sc = document.getElementById('score-card');
+  sc.style.display = 'block';
+  sc.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function resetTest() {
+  answers.fill(null);
+  document.getElementById('score-card').style.display = 'none';
+  renderQuestions();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Init
+renderQuestions();
+</script>
+</body>
+</html>
